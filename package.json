@@ -1,0 +1,22 @@
+{
+  "name": "certificate-generator",
+  "version": "1.0.0",
+  "description": "A project to generate PDF certificates based on user input and selected templates.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "handlebars": "^4.7.7",
+    "psd": "^3.4.0",
+    "puppeteer": "^10.0.0"
+  },
+  "keywords": [
+    "certificate",
+    "pdf",
+    "generator"
+  ],
+  "author": "",
+  "license": "ISC"
+}
