@@ -8,6 +8,7 @@ async function fetchTemplates() {
     console.log('Fetching templates...');
     const response = await fetch(templateRootPath);
     const templates = await response.json();
+    console.log('Templates fetched:', templates);
     templates.forEach(template => {
         const option = document.createElement('option');
         option.value = template;
@@ -36,7 +37,7 @@ form.addEventListener('submit', async (event) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'certificate.pdf';
+        a.download = 'certificate.png';
         document.body.appendChild(a);
         a.click();
         a.remove();
