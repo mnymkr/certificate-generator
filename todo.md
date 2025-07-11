@@ -1,0 +1,4 @@
+- [ ] add .psd template functionality for faster speed using psd.js
+- [ ] store templates on a firebase storage
+- [ ] add template preview
+- [ ] allow direct editing on the web page

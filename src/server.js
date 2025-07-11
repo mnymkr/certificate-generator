@@ -1,3 +1,4 @@
+// Required imports
 const express = require('express');
 const PSD = require('psd');
 const fs = require('fs');
@@ -5,17 +6,20 @@ const path = require('path');
 const generateCertificate = require('./generateCertificate');
 const templateRootPath = '../templates';
 
+// Create an Express application
 const app = express();
 app.use(express.json());
 
-const pdfDir = path.join(__dirname, 'generated_pdfs');
-if (!fs.existsSync(pdfDir)) {
-    fs.mkdirSync(pdfDir);
+// Ensure the generated PDFs directory exists
+const pngDir = path.join(__dirname, '../generated_pngs');
+if (!fs.existsSync(pngDir)) {
+    fs.mkdirSync(pngDir);
 }
 
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, '../public')));
 
+// Endpoint to fetch available templates
 app.get('/templates', (req, res) => {
     const templatesPath = path.join(__dirname, templateRootPath);
     const templates = fs.readdirSync(templatesPath).filter(file => 
@@ -24,6 +28,7 @@ app.get('/templates', (req, res) => {
     res.json(templates);
 });
 
+// Endpoint to generate a PNG certificate from a PSD template
 app.post('/generate', async (req, res) => {
     const { templateId, name, achievement } = req.body;
     if (!templateId || !name || !achievement) {
@@ -31,18 +36,32 @@ app.post('/generate', async (req, res) => {
     }
 
     try {
-        const templatePath = path.join(__dirname, templateRootPath, templateId, 'template.html');
-        const cssPath = path.join(__dirname, templateRootPath, templateId, 'style.css');
-        const outputPdfPath = path.join(pdfDir, `${Date.now()}-certificate.pdf`);
+        // Build the path to the requested PSD template file
+        const templatePsdPath = path.join(__dirname, templateRootPath, templateId, `${templateId}.psd`);
+        if (!fs.existsSync(templatePsdPath)) {
+            return res.status(404).json({ error: 'Template PSD not found' });
+        }
 
-        await generateCertificate(templatePath, cssPath, { name, achievement }, outputPdfPath);
-        res.download(outputPdfPath, 'certificate.pdf', (err) => {
-            if (err) console.error('Download error:', err);
-            fs.unlinkSync(outputPdfPath);
+        // Output PNG path
+        // const outputPngName = `${Date.now()}-${templateId}-certificate.png`;
+        const outputPngName = "certificate.png"; // For simplicity, using a fixed name
+        const outputPngPath = path.join(pngDir, outputPngName);
+
+        // Generate PNG from PSD
+        await generateCertificate(templatePsdPath, { name, achievement }, outputPngPath);
+
+        // Send the PNG file for download
+        res.download(outputPngPath, outputPngName, (err) => {
+            if (err) {
+                console.error('Download error:', err);
+                return res.status(500).json({ error: 'Failed to download certificate' });
+            }
+            // Optionally clean up the generated file after download
+            fs.unlinkSync(outputPngPath);
         });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Failed to generate certificate' });
+        return res.status(500).json({ error: 'Failed to generate certificate' });
     }
 });
 
