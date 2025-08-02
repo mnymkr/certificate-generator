@@ -17,6 +17,7 @@
   "homepage": "https://github.com/mnymkr/certificate-generator#readme",
   "description": "",
   "dependencies": {
+    "@vercel/node": "^5.3.10",
     "canvas": "^3.1.2",
     "express": "^5.1.0"
   }

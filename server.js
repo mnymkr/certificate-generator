@@ -5,29 +5,37 @@ const { createCanvas, loadImage } = require('canvas');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const TEMPLATES_DIR = path.join(__dirname, 'public/templates');
 
-// Add this explicit GET endpoint BEFORE your static middleware:
-app.get('/templates', (req, res) => {
-  fs.readdir(TEMPLATES_DIR, (err, files) => {
-    if (err) {
-      console.error('Error reading templates:', err);
-      return res.status(500).json({ error: 'Error reading templates' });
-    }
-    
+// Vercel-compatible paths
+const TEMPLATES_DIR = path.join(process.cwd(), 'public/templates');
+
+// Middleware
+app.use(express.json());
+
+// API Endpoints
+app.get('/templates', async (req, res) => {
+  try {
+    const files = await fs.promises.readdir(TEMPLATES_DIR);
     const templates = files
       .filter(file => file.endsWith('.png'))
       .map(file => file.replace('.png', ''));
-    
     res.json(templates);
-  });
+  } catch (err) {
+    console.error('Error:', err);
+    res.status(500).json({ error: 'Failed to load templates' });
+  }
 });
 
-// Middleware
-app.use(express.static('public'));
-app.use(express.json());
-
+// Static files (must come AFTER API routes)
 app.use('public/templates', express.static(TEMPLATES_DIR));
+app.use(express.static(path.join(process.cwd(), 'public')));
+
+// Start server (different for Vercel)
+if (process.env.VERCEL) {
+  module.exports = app;
+} else {
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
 
 
 // Generate preview with enhanced positioning rules
