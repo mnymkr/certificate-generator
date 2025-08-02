@@ -1,22 +1,23 @@
 {
   "name": "certificate-generator",
   "version": "1.0.0",
-  "description": "A project to generate PDF certificates based on user input and selected templates.",
-  "main": "src/server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node src/server.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {
-    "express": "^4.17.1",
-    "handlebars": "^4.7.7",
-    "psd": "^3.4.0",
-    "puppeteer": "^10.0.0"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mnymkr/certificate-generator.git"
   },
-  "keywords": [
-    "certificate",
-    "pdf",
-    "generator"
-  ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mnymkr/certificate-generator/issues"
+  },
+  "homepage": "https://github.com/mnymkr/certificate-generator#readme",
+  "description": "",
+  "dependencies": {
+    "canvas": "^3.1.2",
+    "express": "^5.1.0"
+  }
 }
