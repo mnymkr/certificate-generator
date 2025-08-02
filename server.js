@@ -37,6 +37,15 @@ if (process.env.VERCEL) {
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
 
+const { registerFont, createCanvas } = require('canvas');
+const path = require('path');
+
+// Register fonts before creating canvas
+registerFont(path.join(process.cwd(), 'node_modules/@fontsource/roboto/files/roboto-latin-400-normal.woff'), {
+  family: 'Roboto',
+  weight: 'normal',
+  style: 'normal'
+});
 
 // Generate preview with enhanced positioning rules
 app.post('/preview', async (req, res) => {
@@ -48,6 +57,13 @@ app.post('/preview', async (req, res) => {
     const image = await loadImage(imgPath);
     const canvas = createCanvas(image.width, image.height);
     const ctx = canvas.getContext('2d');
+    
+    // Use registered font
+    ctx.font = `bold ${nameFontSize}px Roboto`;  // Changed from Arial to Roboto
+    ctx.fillStyle = '#000000';
+    ctx.textAlign = 'center';
+    ctx.fillText(name, nameX, nameY);
+    
     ctx.drawImage(image, 0, 0);
 
     // Load coordinates and font sizes
