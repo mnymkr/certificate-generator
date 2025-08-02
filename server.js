@@ -7,13 +7,6 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const TEMPLATES_DIR = path.join(__dirname, 'templates');
 
-// Middleware
-app.use(express.static('public'));
-// app.use('/templates', express.static(TEMPLATES_DIR));
-app.use(express.json());
-
-app.use('/templates', express.static(TEMPLATES_DIR));
-
 // Add this explicit GET endpoint BEFORE your static middleware:
 app.get('/templates', (req, res) => {
   fs.readdir(TEMPLATES_DIR, (err, files) => {
@@ -29,6 +22,14 @@ app.get('/templates', (req, res) => {
     res.json(templates);
   });
 });
+
+// Middleware
+app.use(express.static('public'));
+app.use(express.static('templates'));
+app.use(express.json());
+
+app.use('/templates', express.static(TEMPLATES_DIR));
+
 
 // Generate preview with enhanced positioning rules
 app.post('/preview', async (req, res) => {
