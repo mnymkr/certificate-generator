@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-const { createCanvas, loadImage } = require('canvas');
+const { registerFont, createCanvas, loadImage } = require('canvas');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,6 +11,14 @@ const TEMPLATES_DIR = path.join(process.cwd(), 'public/templates');
 
 // Middleware
 app.use(express.json());
+
+// Register fonts before creating canvas
+registerFont(path.join(process.cwd(), 'node_modules/@fontsource/roboto/files/roboto-latin-400-normal.woff'), {
+  family: 'Roboto',
+  weight: 'normal',
+  style: 'normal'
+});
+
 
 // API Endpoints
 app.get('/templates', async (req, res) => {
@@ -37,16 +45,6 @@ if (process.env.VERCEL) {
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
 
-const { registerFont, createCanvas } = require('canvas');
-const path = require('path');
-
-// Register fonts before creating canvas
-registerFont(path.join(process.cwd(), 'node_modules/@fontsource/roboto/files/roboto-latin-400-normal.woff'), {
-  family: 'Roboto',
-  weight: 'normal',
-  style: 'normal'
-});
-
 // Generate preview with enhanced positioning rules
 app.post('/preview', async (req, res) => {
   const { template, name, achievement } = req.body;
@@ -57,14 +55,6 @@ app.post('/preview', async (req, res) => {
     const image = await loadImage(imgPath);
     const canvas = createCanvas(image.width, image.height);
     const ctx = canvas.getContext('2d');
-    
-    // Use registered font
-    ctx.font = `bold ${nameFontSize}px Roboto`;  // Changed from Arial to Roboto
-    ctx.fillStyle = '#000000';
-    ctx.textAlign = 'center';
-    ctx.fillText(name, nameX, nameY);
-    
-    ctx.drawImage(image, 0, 0);
 
     // Load coordinates and font sizes
     const coordPath = path.join(TEMPLATES_DIR, `${template}.txt`);
@@ -74,6 +64,14 @@ app.post('/preview', async (req, res) => {
     let [nameX, nameY, nameFontSize] = coords[0].split(',').map(Number);
     let [achievementX, achievementY, achievementFontSize] = coords[1].split(',').map(Number);
     const maxWidth = coords[2] ? Number(coords[2]) : 0;
+    
+    // Use registered font
+    ctx.font = `bold ${nameFontSize}px Roboto`;  // Changed from Arial to Roboto
+    ctx.fillStyle = '#000000';
+    ctx.textAlign = 'center';
+    ctx.fillText(name, nameX, nameY);
+    
+    ctx.drawImage(image, 0, 0);
 
     if (nameX == 0) {
       nameX = canvas.width / 2;
