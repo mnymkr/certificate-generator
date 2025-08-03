@@ -19,6 +19,12 @@ registerFont(path.join(process.cwd(), 'node_modules/@fontsource/roboto/files/rob
   style: 'normal'
 });
 
+// Explicitly register fonts (place this at the top of your file)
+registerFont(path.join(__dirname, 'public/fonts/Roboto/Roboto-Regular.ttf'), {
+  family: 'Roboto',
+  weight: 'normal'
+});
+
 
 // API Endpoints
 app.get('/templates', async (req, res) => {
@@ -65,8 +71,14 @@ app.post('/preview', async (req, res) => {
     let [achievementX, achievementY, achievementFontSize] = coords[1].split(',').map(Number);
     const maxWidth = coords[2] ? Number(coords[2]) : 0;
     
-    // Use registered font
-    ctx.font = `bold ${nameFontSize}px Roboto`;  // Changed from Arial to Roboto
+    // // Use registered font
+    // ctx.font = `bold ${nameFontSize}px Roboto`;  // Changed from Arial to Roboto
+    // ctx.fillStyle = '#000000';
+    // ctx.textAlign = 'center';
+    // ctx.fillText(name, nameX, nameY);
+
+    // Use explicit font family
+    ctx.font = `bold ${nameFontSize}px "Roboto", sans-serif`;
     ctx.fillStyle = '#000000';
     ctx.textAlign = 'center';
     ctx.fillText(name, nameX, nameY);
