@@ -4,81 +4,159 @@
   <title>Certificate Generator</title>
   <style>
     body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center; /* Center vertically */
+      align-items: center; /* Center horizontally */
+      min-height: 100vh; /* Full viewport height */
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 20px;
+      padding: 25px;
       background-color: #f5f5f5;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-    }
-    input, textarea, select {
-      width: 100%;
-      padding: 8px;
       box-sizing: border-box;
     }
+    
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .form-section {
+      width: 100%;
+      max-width: 500px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      box-sizing: border-box;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+    
+    input:focus, textarea:focus, select:focus {
+      border-color: #4CAF50;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    }
+    
     button {
       background-color: #4CAF50;
       color: white;
-      padding: 10px 15px;
+      padding: 12px 25px;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: all 0.3s;
+      margin: 10px 5px;
     }
+    
     button:hover {
       background-color: #45a049;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
+    
+    #downloadBtn {
+      background-color: #2196F3;
+    }
+    
+    #downloadBtn:hover {
+      background-color: #0b7dda;
+    }
+    
     .preview-container {
-      width: 75%;
-      margin-top: 20px;
-      border: 1px solid #ddd;
-      padding: 10px;
-      border-radius: 4px;
-    }
-    .preview-image {
       width: 100%;
-      height: auto;
+      max-width: 800px;
+      margin: 30px 0 20px;
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center; /* Center horizontally */
+      align-items: center; /* Center vertically */
+      min-height: 400px;
+      background: #f9f9f9;
+    }
+    
+    .preview-image {
+      max-width: 100%;
+      max-height: 100%;
       display: none;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
     }
-    .template-option {
-      padding: 8px;
-      cursor: pointer;
-      border-bottom: 1px solid #eee;
-    }
-    .template-option:hover {
-      background-color: #f0f0f0;
-    }
-    .template-option.selected {
-      background-color: #e0e0e0;
-      font-weight: bold;
-    }
+    
     .loading {
       display: none;
-      margin-top: 10px;
+      margin: 15px 0;
+      font-style: italic;
+      color: #666;
     }
+    
     .template-dropdown {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       border: 1px solid #ddd;
-      border-radius: 4px;
+      border-radius: 6px;
       font-size: 16px;
       margin-bottom: 15px;
+      background-color: white;
     }
-
-    .template-dropdown option {
-      padding: 8px;
+    
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    
+    .placeholder-text {
+      text-align: center;
+      color: #999;
+      font-style: italic;
+      margin: 20px 0;
+    }
+    
+    @media (max-width: 768px) {
+      body {
+        padding: 15px;
+      }
+      
+      .container {
+        padding: 20px;
+      }
+      
+      .btn-container {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      button {
+        width: 100%;
+        margin: 5px 0;
+      }
     }
   </style>
 </head>
@@ -86,29 +164,36 @@
   <div class="container">
     <h1>Certificate Generator</h1>
     
-    <div class="form-group">
-      <label for="templateSelect">Select Template:</label>
-      <select id="templateSelect" class="template-dropdown">
-        <option value="" disabled selected>Loading templates...</option>
-      </select>
+    <div class="form-section">
+      <div class="form-group">
+        <label for="templateSelect">Select Template:</label>
+        <select id="templateSelect" class="template-dropdown">
+          <option value="" disabled selected>Loading templates...</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="nameInput">Name:</label>
+        <input type="text" id="nameInput" required placeholder="Enter your full name">
+      </div>
+      
+      <div class="form-group">
+        <label for="achievementInput">Achievement:</label>
+        <textarea id="achievementInput" required placeholder="Describe the achievement..."></textarea>
+      </div>
+      
+      <div class="btn-container">
+        <button id="previewBtn">Generate Preview</button>
+        <button id="downloadBtn" disabled>Download Certificate</button>
+      </div>
+      
+      <div class="loading" id="loading">Generating preview... Please wait</div>
     </div>
-    
-    <div class="form-group">
-      <label for="nameInput">Name:</label>
-      <input type="text" id="nameInput" required>
-    </div>
-    
-    <div class="form-group">
-      <label for="achievementInput">Achievement:</label>
-      <textarea id="achievementInput" required></textarea>
-    </div>
-    
-    <button id="previewBtn">Generate Preview</button>
-    <button id="downloadBtn" disabled>Download Certificate</button>
-    
-    <div class="loading" id="loading">Generating preview...</div>
     
     <div class="preview-container">
+      <div class="placeholder-text" id="previewPlaceholder">
+        Your certificate preview will appear here
+      </div>
       <img id="templatePreview" class="preview-image" alt="Template Preview">
       <img id="certificatePreview" class="preview-image" alt="Certificate Preview">
     </div>
@@ -116,7 +201,7 @@
 
   <script>
     // DOM elements
-    const templateSelector = document.getElementById('templateSelector');
+    const templateSelect = document.getElementById('templateSelect');
     const nameInput = document.getElementById('nameInput');
     const achievementInput = document.getElementById('achievementInput');
     const previewBtn = document.getElementById('previewBtn');
@@ -124,6 +209,7 @@
     const loading = document.getElementById('loading');
     const templatePreview = document.getElementById('templatePreview');
     const certificatePreview = document.getElementById('certificatePreview');
+    const previewPlaceholder = document.getElementById('previewPlaceholder');
     
     // State
     let selectedTemplate = null;
@@ -136,7 +222,6 @@
         const response = await fetch('/templates');
         if (!response.ok) throw new Error('Failed to load templates');
         
-        const templateSelect = document.getElementById('templateSelect');
         templates = await response.json();
         
         // Clear loading message
@@ -160,6 +245,7 @@
           selectedTemplate = templates[0];
           templatePreview.src = `templates/${selectedTemplate}.png`;
           templatePreview.style.display = 'block';
+          previewPlaceholder.style.display = 'none';
         }
         
         // Handle template selection changes
@@ -168,33 +254,27 @@
           templatePreview.src = `templates/${selectedTemplate}.png`;
           templatePreview.style.display = 'block';
           certificatePreview.style.display = 'none';
+          previewPlaceholder.style.display = 'none';
         });
         
       } catch (error) {
         console.error('Error loading templates:', error);
-        const templateSelect = document.getElementById('templateSelect');
         templateSelect.innerHTML = '<option value="" disabled>Error loading templates</option>';
       }
     }
-
     
     // Generate preview
     previewBtn.addEventListener('click', async () => {
-      const templateSelect = document.getElementById('templateSelect');
-      selectedTemplate = templateSelect.value;
-      
       if (!selectedTemplate) {
-        alert('Please select a template');
-        return;
+        selectedTemplate = templateSelect.value;
+        if (!selectedTemplate) {
+          alert('Please select a template');
+          return;
+        }
       }
 
       const name = nameInput.value.trim();
       const achievement = achievementInput.value.trim();
-      
-      if (!selectedTemplate) {
-        alert('Please select a template');
-        return;
-      }
       
       if (!name || !achievement) {
         alert('Please fill in all fields');
@@ -202,6 +282,7 @@
       }
       
       loading.style.display = 'block';
+      previewBtn.disabled = true;
       
       try {
         const response = await fetch('/preview', {
@@ -222,6 +303,7 @@
         certificatePreview.src = previewUrl;
         certificatePreview.style.display = 'block';
         templatePreview.style.display = 'none';
+        previewPlaceholder.style.display = 'none';
         
         downloadBtn.disabled = false;
       } catch (error) {
@@ -229,6 +311,7 @@
         alert('Failed to generate preview');
       } finally {
         loading.style.display = 'none';
+        previewBtn.disabled = false;
       }
     });
     

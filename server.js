@@ -3,6 +3,9 @@ const fs = require('fs');
 const path = require('path');
 const { registerFont, createCanvas, loadImage } = require('canvas');
 
+// const admin = require('firebase-admin');
+// const { Storage } = require('@google-cloud/storage');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
